@@ -1,4 +1,6 @@
 
+-----------GEE code for Flood Extent analysis-----------------------
+
 //extract the Upstream Downstream Shapefile from table
 ------First rename the variable 'table' to 'AOI' by selecting and typing-----------
 //Then write the code:
@@ -13,7 +15,7 @@ var collection = ee.ImageCollection("COPERNICUS/S1_GRD")
 //filter the before and after flood imageries
 
 var before = collection.filterDate("2023-09-20","2023-09-30").mosaic()
-var after = collection.filterDate("2023-10-03", "2023-10-10").mosaic()
+var after = collection.filterDate("2023-10-04", "2023-10-10").mosaic()
 
 var before_clip = before.clip(AOI)
 var after_clip = after.clip(AOI)
@@ -25,7 +27,7 @@ var after_s = after_clip.focal_median(30, "circle", "meters")
 
 //difference
 
-var difference = after_s.substract(before_s)
+var difference = after_s.subtract(before_s)
 
 var flood extent = difference.lt(-3)
 var flood = flood_extent.updateMask(flood_extent)
@@ -51,7 +53,7 @@ var s1_collection = ee.ImageCollection("COPERNICUS/S1_GRD")
 var date_before_start = '2023-09-20';
 var date_before_end = '2023-09-30';
 var date_after_start = '2023-10-04';
-var date_after_end = '2023-10-15';
+var date_after_end = '2023-10-10';
 
 // Filter the collection for 'before' flood imagery and create a mosaic.
 var before_flood_image = s1_collection.filterDate(date_before_start, date_before_end).mosaic();
@@ -94,12 +96,8 @@ Map.addLayer(difference_image, diff_vis_params, "Difference Teesta (After - Befo
 Map.addLayer(flood_extent, flood_vis_params, "Flood Extent Teesta 2023 (Threshold < -3)");
 
 // Add an information layer to indicate processing complete.
-print('Flood mapping process complete for ' + AOI.first().get('gaul1_name') + ' during 2023 Kosi/Teesta flood period.');
+print('Flood mapping process complete for ' + AOI.first(). + ' during 2023 Kosi/Teesta flood period.');
 print('Dates: Before (' + date_before_start + ' to ' + date_before_end + '), After (' + date_after_start + ' to ' + date_after_end + ')');
-
-
-
-//////////////////////////////////////////
 
 
 // Export the flood extent map layer to Google Drive.
